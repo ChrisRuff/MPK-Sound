@@ -21,12 +21,12 @@ add_executable(MPK-Sound
         MPK_Sound/include/devices/DeviceManager.hpp
         MPK_Sound/include/devices/Keyboard.hpp
         MPK_Sound/include/components/Piano.hpp
-        MPK_Sound/include/sound/Player.hpp
+        MPK_Sound/include/sound/AudioManager.hpp
 
         MPK_Sound/src/MainWindow.cpp
         MPK_Sound/src/devices/DeviceManager.cpp
         MPK_Sound/src/components/Piano.cpp
-        MPK_Sound/src/sound/Player.cpp)
+        MPK_Sound/src/sound/AudioManager.cpp MPK_Sound/include/Action.hpp MPK_Sound/src/Action.cpp MPK_Sound/include/components/CommandDialog.hpp MPK_Sound/src/components/CommandDialog.cpp MPK_Sound/include/components/PianoKey.hpp)
 
 target_include_directories(MPK-Sound
         ${component}

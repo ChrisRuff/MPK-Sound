@@ -29,13 +29,14 @@ class DeviceThread : public QThread
 Q_OBJECT
 public:
     DeviceThread(Device d) : QThread(), device(d) {};
-    ~DeviceThread()
+    void Close()
     {
         write_process->close();
         if(write_process->waitForFinished(5000))
             write_process->terminate();
         write_process.reset();
         std::cout << "Closing Port: " << device.port << std::endl;
+        std::filesystem::remove(temp_file);
     }
 private:
     Device device;
@@ -54,11 +55,12 @@ private:
 class DeviceManager {
 private:
     std::shared_ptr<Bean> press;
-
     std::unique_ptr<DeviceThread> writer;
+    std::vector<Device> devices;
 public:
-    DeviceManager() : press(new Bean){}
+    DeviceManager() : press(new Bean), devices(this->List()){}
 
+    void Close() {writer->Close();}
 public:
     std::vector<Device> List();
     void Read(Device device);
@@ -67,6 +69,7 @@ public:
     void StopWatch();
 public:
     Bean* GetBean() const { return press.get(); }
+    std::vector<Device>& GetDevices() { return devices; };
 };
 
 };

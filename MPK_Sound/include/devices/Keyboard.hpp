@@ -10,7 +10,6 @@ struct KeyPress {
     bool on{false};
 
     KeyPress() = default;
-
     KeyPress(QString output) {
         auto pieces = output.split(" ");
         for (auto &piece: pieces) {
@@ -24,7 +23,7 @@ struct KeyPress {
         velocity = pieces.at(7).toInt();
     }
 
-    bool operator==(const KeyPress &other) {
+    bool operator==(const KeyPress& other) const {
         return note == other.note && velocity == other.velocity && on == other.on;
     }
 
@@ -39,4 +38,15 @@ struct KeyPress {
         return out;
     }
 };
+}
+namespace std{
+    template<>
+    struct hash<ruff::sound::KeyPress>
+    {
+        std::size_t operator()(const ruff::sound::KeyPress& k) const
+        {
+            using std::hash;
+            return (hash<int>()(k.note));
+        }
+    };
 }

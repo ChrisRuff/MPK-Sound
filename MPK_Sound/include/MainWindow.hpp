@@ -5,6 +5,7 @@
 #include <MPK_Sound/include/devices/DeviceManager.hpp>
 #include <MPK_Sound/include/components/Piano.hpp>
 #include <QComboBox>
+#include <MPK_Sound/include/sound/AudioManager.hpp>
 
 namespace ruff::sound {
 
@@ -40,25 +41,35 @@ private:
 
 class MainWindow : public QMainWindow {
 private: // Member Variables
-    DeviceManager manager{};
-    std::vector<Device> devices{};
+    std::unique_ptr<DeviceManager> devices{};
+    std::unique_ptr<AudioManager> audio{};
 
 private:
     WatcherThread watcher{};
-    QFileSystemWatcher* file_watcher;
+    std::unique_ptr<QFileSystemWatcher> file_watcher;
 
 public:
     MainWindow();
 
-    void onKeyboardPressed();
+public:
+    void closeEvent(QCloseEvent* event) override;
 
 private: // QComponents
-    Piano* piano_preview;
-    QComboBox* devices_box;
+    std::unique_ptr<Piano> piano_preview;
+    std::unique_ptr<QComboBox> devices_box;
+    std::unique_ptr<QComboBox> sources_box;
+    std::unique_ptr<QPushButton> make_mic_button;
+    std::unique_ptr<QPushButton> reset_button;
+    std::unique_ptr<QPushButton> down_octave_button;
+    std::unique_ptr<QPushButton> up_octave_button;
 
 public: // Connect functions
+    void Reset();
+    void OnKeyboardPressed();
+
 private: // Getters/Setters
     Device& CurrentDevice();
+    InputDevice& CurrentSource();
 };
 
 
