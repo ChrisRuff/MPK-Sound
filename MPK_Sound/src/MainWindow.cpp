@@ -15,6 +15,8 @@ MainWindow::MainWindow() {
         this->file_watcher = std::unique_ptr<QFileSystemWatcher>(new QFileSystemWatcher(this));
         this->down_octave_button = std::unique_ptr<QPushButton>(new QPushButton("<<<"));
         this->up_octave_button = std::unique_ptr<QPushButton>(new QPushButton(">>>"));
+
+        this->piano_preview->Read("/tmp/sounds.conf");
     };
 
     auto fill = [this](){
@@ -93,6 +95,7 @@ MainWindow::MainWindow() {
 
 }
 void MainWindow::closeEvent(QCloseEvent *event) {
+    this->piano_preview->Write("/tmp/sounds.conf");
     this->watcher.Close();
     this->watcher.quit();
     QWidget::closeEvent(event);

@@ -7,6 +7,7 @@
 #include <QRadioButton>
 #include <QTextEdit>
 #include <QLabel>
+#include <QCheckBox>
 
 #include <MPK_Sound/include/devices/Keyboard.hpp>
 #include <MPK_Sound/include/Action.hpp>
@@ -27,6 +28,7 @@ public:
     std::unique_ptr<QPushButton> accept_button;
 
     std::unique_ptr<QLabel> file_path;
+    std::unique_ptr<QCheckBox> sound_toggle;
 
     CommandDialog();
 
