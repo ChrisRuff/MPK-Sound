@@ -4,6 +4,7 @@
 #include <QLabel>
 
 #include <MPK_Sound/include/components/CommandDialog.hpp>
+#include <MPK_Sound/include/components/VerticalLabel.hpp>
 
 namespace ruff::sound {
 class PianoKey : public QWidget {
@@ -12,9 +13,12 @@ private:
     int id;
     QPushButton* button;
     QLabel* note;
+    QLabel* file_label;
     CommandDialog* dialog;
-    std::unique_ptr<Action>action;
+    std::unique_ptr<Action> action;
 
+private:
+    void resizeEvent(QResizeEvent*) override;
 
 public:
     PianoKey(int i);

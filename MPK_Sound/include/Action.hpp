@@ -11,6 +11,7 @@ protected:
     QProcess process;
 public:
     virtual std::string GetType() = 0;
+    virtual std::string GetName() = 0;
     virtual void Do() = 0;
     virtual void Stop() = 0;
     virtual void Write(std::ofstream&) const = 0;
@@ -26,6 +27,7 @@ public:
     void Do() override;
     void Stop() override;
     std::string GetType() override;
+    std::string GetName() override;
     void Write(std::ofstream&) const override;
 
 };
@@ -39,6 +41,7 @@ public:
     void Do() override;
     void Stop() override;
     std::string GetType() override;
+    std::string GetName() override;
     void Write(std::ofstream&) const override;
 };
 }

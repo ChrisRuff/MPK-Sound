@@ -12,7 +12,7 @@ std::vector<Device> DeviceManager::List() {
     output.remove(0);
 
     std::vector<Device> devices;
-    for (auto &line: output) {
+    for (auto& line : output) {
         QStringList device_string = line.split("  ");
         device_string.removeAll(QString(""));
         if (device_string.size() < 3)

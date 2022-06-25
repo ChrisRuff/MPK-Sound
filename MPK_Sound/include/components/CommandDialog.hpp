@@ -18,17 +18,17 @@ class CommandDialog : public QDialog {
 public:
     std::unique_ptr<QVBoxLayout> vbox;
 
-    std::unique_ptr<QRadioButton> command_button;
-    std::unique_ptr<QRadioButton> sound_button;
+    QRadioButton* command_button;
+    QRadioButton* sound_button;
 
-    std::unique_ptr<QTextEdit> command_box;
-    std::unique_ptr<QPushButton> sound_box;
+    QTextEdit* command_box;
+    QPushButton* sound_box;
 
 
-    std::unique_ptr<QPushButton> accept_button;
+    QPushButton* accept_button;
 
-    std::unique_ptr<QLabel> file_path;
-    std::unique_ptr<QCheckBox> sound_toggle;
+    QLabel* file_path;
+    QCheckBox* sound_toggle;
 
     CommandDialog();
 

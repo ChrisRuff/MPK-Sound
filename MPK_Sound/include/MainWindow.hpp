@@ -55,13 +55,14 @@ public:
     void closeEvent(QCloseEvent* event) override;
 
 private: // QComponents
-    std::unique_ptr<Piano> piano_preview;
-    std::unique_ptr<QComboBox> devices_box;
-    std::unique_ptr<QComboBox> sources_box;
-    std::unique_ptr<QPushButton> make_mic_button;
-    std::unique_ptr<QPushButton> reset_button;
-    std::unique_ptr<QPushButton> down_octave_button;
-    std::unique_ptr<QPushButton> up_octave_button;
+    Piano* piano_preview;
+    QComboBox* devices_box;
+    QComboBox* sources_box;
+    QComboBox* sinks_box;
+    QPushButton* make_mic_button;
+    QPushButton* reset_button;
+    QPushButton* down_octave_button;
+    QPushButton* up_octave_button;
 
 public: // Connect functions
     void Reset();
