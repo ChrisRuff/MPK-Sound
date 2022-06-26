@@ -17,7 +17,15 @@ MainWindow::MainWindow() {
         this->down_octave_button = new QPushButton("<<<");
         this->up_octave_button = new QPushButton(">>>");
 
-        this->piano_preview->Read("/tmp/sounds.conf");
+        std::filesystem::path home = getenv("HOME");
+        if(std::filesystem::exists(home))
+        {
+            this->piano_preview->Read(home / ".sounds.conf");
+        }
+        else if(std::filesystem::exists("/tmp/sounds.conf"))
+        {
+            this->piano_preview->Read("/tmp/sounds.conf");
+        }
     };
 
     auto fill = [this](){

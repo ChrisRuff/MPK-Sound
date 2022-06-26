@@ -4,12 +4,15 @@
 #include <QProcess>
 
 namespace ruff::sound {
-struct InputDevice {
+struct InputDevice { // Source
     int id;
+    std::string device_name;
     std::string name;
 };
-struct OutputDevice {
+struct OutputDevice { // Sink
     int id;
+    std::string device_name;
+
     std::string name;
     bool default_sink{false};
 };
@@ -30,7 +33,7 @@ public:
     AudioManager();
     ~AudioManager();
     void Reset();
-    void Make(const QStringList& params);
+    int Make(const QStringList& params);
     void MakeInput(const InputDevice&);
     void SetDefaultSink(int device_id);
 

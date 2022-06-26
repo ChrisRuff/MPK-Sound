@@ -7,7 +7,6 @@ AudioManager::AudioManager() {
     this->audio_controller = std::unique_ptr<QProcess>(new QProcess);
     this->sources = ListSources();
     this->sinks = ListSinks();
-    this->default_sink = GetDefaultSink();
 }
 AudioManager::~AudioManager() {
     Reset();
@@ -35,9 +34,15 @@ std::vector<InputDevice> ruff::sound::AudioManager::ListSources() {
     while(matches.hasNext())
     {
         auto match = matches.next();
+        QString source = match.captured();
+        std::string device_name = source.section(' ', 2, 2).section('\n', 0, 0).toStdString();
+        device_name.erase(0, 1);
+        device_name.erase(device_name.size(), 1);
+
         sources.emplace_back(
-                (match.captured().section(' ', 1, 1).section('\n', 0, 0).toInt()),
-                (match.captured().section('"', -2, -2).toStdString()));
+                (source.section(' ', 1, 1).section('\n', 0, 0).toInt()),
+                device_name,
+                (source.section('"', -2, -2).toStdString()));
     }
 
     return sources;
@@ -70,25 +75,41 @@ std::vector<OutputDevice> ruff::sound::AudioManager::ListSinks() {
 
         // Trim regex output to be easier to read
         int index = index_string.section(' ', 1, 1).section('\n', 0, 0).toInt();
+        std::string device_name = index_string.section(' ', 2, 2).toStdString();
         std::string name = name_string.section(' ', 2).toStdString();
 
         // Trim quotations
         name.erase(0, 1);
         name.erase(name.length()-1);
 
-        sinks.emplace_back(index, name, index == default_sink_index);
+        // Trim <>
+        device_name.erase(0, 1);
+        device_name.erase(device_name.size()-1, 1);
+
+        sinks.emplace_back(index, device_name, name, index == default_sink_index);
+
+        if(default_sink_index == index)
+        {
+            this->default_sink = sinks.back();
+        }
     }
 
     return sinks;
 }
 
-void AudioManager::Make(const QStringList& params) {
+int AudioManager::Make(const QStringList& params) {
+    for(QString a : params)
+    {
+        std::cout << a.toStdString() << " ";
+    }
+    std::cout << std::endl;
     audio_controller->start("/usr/bin/pactl", params);
     audio_controller->waitForFinished();
 
     auto stdout = audio_controller->readAllStandardOutput();
     std::cout << stdout.toStdString() << std::endl;
     module_indexs.push_back(stdout.trimmed().toInt()); // Remove newline
+    return module_indexs.back();
 }
 
 void ruff::sound::AudioManager::MakeInput(const ruff::sound::InputDevice& source) {
@@ -111,10 +132,10 @@ void ruff::sound::AudioManager::MakeInput(const ruff::sound::InputDevice& source
     this->Make({"load-module", "module-remap-source", "master=output.monitor",
                 "source_name=output_mic", "source_properties=device.description=(Apps+Mic)-Source"});
 
-    audio_controller->start("/usr/bin/pacmd", QStringList({"set-default-source", QString::number(source.id)}));
+    audio_controller->start("/usr/bin/pacmd", QStringList({"set-default-source", "output_mic"}));
     audio_controller->waitForFinished();
 
-    audio_controller->start("/usr/bin/pacmd", QStringList({"set-default-sink", QString::number(default_sink.id)}));
+    audio_controller->start("/usr/bin/pacmd", QStringList({"set-default-sink", "audio"}));
     audio_controller->waitForFinished();
 }
 
@@ -131,9 +152,9 @@ OutputDevice AudioManager::GetDefaultSink() {
     }
     QString default_match = default_matched.captured();
     int default_id = default_match.right(1).toInt();
-    //QString default_name = default_match.section(' ', 2, 2);
+    QString default_name = default_match.section(' ', 2, 2);
 
-    OutputDevice default_device{default_id, ""};
+    OutputDevice default_device{default_id, default_name.toStdString()};
     return default_device;
 }
 
